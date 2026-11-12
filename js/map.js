@@ -109,7 +109,8 @@ export function createMap(container, geo, handlers) {
       .attr('aria-label', d => `${d.properties.name}: ${d3.format('+.1f')(value(d.properties.name))} °C`)
       .attr('aria-pressed', d => d.properties.name === view.selected)
       .classed('is-selected', d => d.properties.name === view.selected)
-      .classed('is-hovered', d => d.properties.name === view.hovered);
+      .classed('is-hovered', d => d.properties.name === view.hovered)
+      .classed('is-dimmed', d => !!view.highlight && !view.highlight.has(d.properties.name));
 
     const marks = [{ kind: 'selected', name: view.selected }, { kind: 'hovered', name: view.hovered }]
       .filter(m => m.name && !(m.kind === 'hovered' && m.name === view.selected));
@@ -128,7 +129,8 @@ export function createMap(container, geo, handlers) {
     inside.select('.value').text(a => d3.format('.1f')(value(a.name)));
     inside.selectAll('text').attr('fill', a => labelInk(value(a.name)));
     outside.select('.value').text(a => d3.format('.1f')(value(a.name)));
-    labelLayer.selectAll('g').classed('is-active', a => a.name === view.hovered || a.name === view.selected);
+    labelLayer.selectAll('g').classed('is-active', a => a.name === view.hovered || a.name === view.selected)
+      .classed('is-dimmed', a => !!view.highlight && !view.highlight.has(a.name));
 
     svg.classed('labels-hidden', !labelsFit || !view.labels);
     lastView = view;
