@@ -13,7 +13,18 @@
     <header>
       <h1>A Warming Divide: Exploring America's Climate Futures</h1>
       <p class="subtitle" id="subtitle">Projected change in annual mean near-surface air temperature vs. 1981–2010</p>
+      <p class="transform-note" id="transform-note">Each state = area-weighted average of model grid cells inside its border · 20-year mean · median of 5 CMIP6 models, each compared with its own 1981–2010 average</p>
+      <p class="question">Every state gets warmer this century, but not equally. <strong>Which parts of the country warm the most, when do our emissions choices start to matter, and how sure are the models?</strong></p>
     </header>
+
+    <section class="patterns" aria-label="Key patterns">
+      <div class="patterns-head">
+        <span class="control-label">Start here: key patterns</span>
+        <button type="button" id="pattern-clear" class="link-button" hidden>Clear highlight</button>
+      </div>
+      <div class="pattern-cards" id="pattern-cards"></div>
+      <p class="pattern-text" id="pattern-text" aria-live="polite"></p>
+    </section>
 
     <section class="controls" aria-label="Map controls">
       <div class="control">
@@ -47,6 +58,27 @@
     </div>
 
     <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
+
+    <article class="writeup" id="writeup">
+      <h2>About this visualization</h2>
+
+      <h3>Why we made it</h3>
+      <p>Climate projections are usually reported as one global number, like “+2.7&nbsp;°C by 2100.” That number hides how differently places will warm. We wanted a map where you can see, state by state, how much warmer the contiguous U.S. gets under two emissions pathways, and how much the climate models agree. Our first idea was to translate temperature into cooling demand for a handful of cities (“Hotter Summers, Bigger Bills”), but city-level degree-days from coarse model grids were noisy and hard to compare. Switching to state-wide annual warming let us cover the whole country with one consistent measure and keep the focus on the bigger question: who warms most, and how much depends on our emissions?</p>
+
+      <h3>Design decisions</h3>
+      <p><strong>Map and colour.</strong> A choropleth is the natural fit because the question is geographic and every state has one value. We used a sequential colour scale (reversed Inferno: pale yellow → orange → red → dark purple) because warming only goes one way; a diverging scale would suggest a meaningful midpoint that doesn’t exist. We picked Inferno over YlOrRd and single-hue Oranges after checking how far apart nearby values look: two states 0.5&nbsp;°C apart stay clearly distinguishable across the whole range. The scale is fixed at 1–7&nbsp;°C for every scenario and period, so a colour always means the same amount of warming and switching views shows real change instead of a re-stretched palette. Value labels sit on each state (with call-outs for small New England states) so readers don’t have to decode colour alone.</p>
+      <p><strong>Legend as a mini-chart.</strong> The colour bar doubles as a distribution: one tick per state shows where all 48 values fall, and a marker follows the hovered or selected state. This makes it easy to see when the whole country shifts right.</p>
+      <p><strong>Uncertainty.</strong> With five models, one median hides a lot. The detail panel shows every model as its own shape, the min–max range as a bar and the median as a tick, for all six scenario/period combinations at once on a fixed axis. We considered error bars and violin plots, but with only five values per row, plotting each model directly is more honest and easier to read.</p>
+      <p><strong>Interaction.</strong> Segmented buttons switch scenario and period (only six combinations, so buttons beat a slider or dropdown). Hovering gives details on demand (median, model range, rank and the scenario gap); clicking links the map to the detail panel, and clicking a row in the panel updates the map, so the two views stay in sync. The “key patterns” buttons are guided entry points: each one sets the map to the view where a pattern is clearest and highlights the states involved, so first-time readers find the interesting parts quickly and can then explore freely. Everything also works by keyboard.</p>
+      <p><strong>Alternatives we dropped.</strong> A time slider over every year looked appealing but single years are dominated by natural variability with one run per model, so we averaged into three 20-year periods. We also tried showing absolute temperatures, but models disagree on baseline temperature by up to ~6&nbsp;°C, so we show each model’s change from its own baseline instead.</p>
+
+      <h3>Data transformations</h3>
+      <p>Starting from monthly <code>tas</code> (CMIP6 <code>Amon</code>, run r1i1p1f1) for ACCESS-CM2, CanESM5, GFDL-ESM4, MIROC6 and MRI-ESM2-0: we averaged months into annual means, interpolated each model to a common 0.25° grid, averaged the grid cells inside each state (weighted by cell area), subtracted each model’s 1981–2010 average, averaged over 20-year periods, and took the median across models. Alaska, Hawaii and DC are left out because the coarse grids represent them poorly. Full details are in <a href="https://github.com/srinisriram/Project03-Website/blob/main/METHODOLOGY.md">METHODOLOGY.md</a>.</p>
+
+      <h3>Development process</h3>
+      <p><strong>Who did what.</strong> Shaun Israni explored the CMIP6 data early on (pulling temperature for U.S. cities across models and scenarios, and testing cooling-degree-days as a measure), made the exploratory graphs for the checkpoint, and did the final polish (the key-patterns guide, subtitle and this write-up). Srinivas Sriram built the state-level data pipeline in Python (regridding, state masks, baselines and model statistics) and the D3 site: the map, legend, tooltip and linked detail panel. Corey Ngo [ADD ROLE]. Abhinav Krishna [ADD ROLE].</p>
+      <p><strong>Time.</strong> We spent roughly [ADD] people-hours in total. The data processing took the most time: finding models that had all three experiments with the same run, handling different calendars and grids, and building fair state averages. The second biggest chunk was the map labelling and colour work: placing labels so they don’t collide, adding call-outs for small states, and testing colour scales until nearby values stayed distinguishable.</p>
+    </article>
 
     <footer class="notes">
       <p>Values represent the median projected warming across five selected CMIP6 models. These are scenario-dependent projections, not deterministic forecasts.</p>

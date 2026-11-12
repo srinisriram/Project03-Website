@@ -253,3 +253,31 @@ h1 {
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
 }
+
+/* ---- question, transforms, key patterns ---- */
+.transform-note { margin: 4px 0 0; font-size: 0.8125rem; color: var(--muted); }
+.question { margin: 14px 0 0; max-width: 820px; font-size: 1rem; }
+.patterns { margin: 18px 0 4px; }
+.patterns-head { display: flex; align-items: baseline; gap: 14px; }
+.link-button { font: inherit; font-size: 0.8125rem; background: none; border: 0; padding: 0; color: var(--ink-2); text-decoration: underline; cursor: pointer; }
+.pattern-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.pattern-card {
+  font: inherit; text-align: left; cursor: pointer;
+  background: var(--panel); border: 1px solid transparent; border-radius: 8px; padding: 10px 12px;
+}
+.pattern-card:hover { border-color: var(--axis); }
+.pattern-card.is-active { background: #fff; border-color: var(--ink); }
+.pattern-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.pattern-card .num { font-size: 0.75rem; font-weight: 700; color: var(--ink-2); }
+.pattern-card .ttl { display: block; font-weight: 700; font-size: 0.9375rem; margin-top: 2px; }
+.pattern-card .sub { display: block; font-size: 0.8125rem; color: var(--ink-2); margin-top: 2px; }
+.pattern-text { min-height: 1.4em; margin: 10px 0 0; max-width: 900px; font-size: 0.9375rem; }
+.state.is-dimmed { opacity: 0.28; }
+.state { transition: opacity 300ms; }
+.labels .is-dimmed { opacity: 0.35; }
+
+/* ---- write-up ---- */
+.writeup { max-width: 820px; margin-top: 36px; padding-top: 16px; border-top: 1px solid var(--rule); }
+.writeup h2 { font-size: 1.35rem; margin: 0 0 8px; }
+.writeup h3 { font-size: 1rem; margin: 18px 0 4px; }
+.writeup p { margin: 0 0 10px; }
