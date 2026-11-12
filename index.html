@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A Warming Divide</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="js/vendor/d3.v7.9.0.min.js"></script>
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <h1>A Warming Divide: Exploring America's Climate Futures</h1>
+      <p class="subtitle" id="subtitle">Projected change in annual mean near-surface air temperature vs. 1981–2010</p>
+    </header>
+
+    <section class="controls" aria-label="Map controls">
+      <div class="control">
+        <span class="control-label" id="scenario-label">Emissions scenario</span>
+        <div class="segmented" id="scenario-buttons" role="group" aria-labelledby="scenario-label"></div>
+      </div>
+      <div class="control">
+        <span class="control-label" id="period-label">Future period</span>
+        <div class="segmented" id="period-buttons" role="group" aria-labelledby="period-label"></div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="labels-toggle" checked>
+        Show values on map
+      </label>
+    </section>
+
+    <div class="layout">
+      <figure class="map-figure">
+        <div id="legend" class="legend"></div>
+        <div id="map" class="map"></div>
+        <figcaption class="hint">Hover over a state for details. Click a state (or press Enter on it) to compare scenarios and models in the detail panel.</figcaption>
+      </figure>
+
+      <aside class="detail" aria-live="polite">
+        <h2 id="detail-title">Select a state</h2>
+        <p class="detail-summary" id="detail-summary"></p>
+        <div id="detail-chart"></div>
+        <div id="detail-legend" class="detail-legend"></div>
+        <p class="detail-note">Each marker is one model. The bar spans the lowest to highest model (inter-model spread, not a probability range); the tick and number are the median. Click a row to show it on the map.</p>
+      </aside>
+    </div>
+
+    <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
+
+    <footer class="notes">
+      <p>Values represent the median projected warming across five selected CMIP6 models. These are scenario-dependent projections, not deterministic forecasts.</p>
+      <p>Each model's warming is measured against its own 1981–2010 average, then averaged over the 20-year period. Models: ACCESS-CM2, CanESM5, GFDL-ESM4, MIROC6, MRI-ESM2-0 (run r1i1p1f1, equal weight). The colour scale is fixed at 1–7&nbsp;°C for every scenario and period so colours can be compared between views. With one run per model, small near-term differences between scenarios are within natural variability.</p>
+      <p class="source">Data: NOAA CMIP6 (Google Cloud public dataset), monthly near-surface air temperature (<code>tas</code>); experiments historical, ssp245, ssp585. State boundaries: Natural Earth.</p>
+    </footer>
+  </main>
+</body>
+</html>
