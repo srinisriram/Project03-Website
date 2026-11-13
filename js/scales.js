@@ -1,4 +1,4 @@
-// Shared encodings and labels, so the map, legend, tooltip, and detail chart always agree.
+// Shared encodings and labels, so the map, legend and tooltip always agree.
 
 export const SCENARIOS = {
   ssp245: { short: 'SSP2-4.5', long: 'SSP2-4.5 (intermediate emissions)', color: '#2a78d6' },
@@ -24,15 +24,6 @@ export const color = d3.scaleSequential()
 
 // Dark text on light fills, white text on dark fills.
 export const labelInk = value => d3.lab(color(value)).l < 55 ? '#ffffff' : '#0b0b0b';
-
-// Model order matches the data file; shapes match the exploratory plots.
-export const MODEL_SYMBOLS = [
-  { type: d3.symbolCircle, rotate: 0 },     // ACCESS-CM2
-  { type: d3.symbolSquare, rotate: 0 },     // CanESM5
-  { type: d3.symbolTriangle, rotate: 0 },   // GFDL-ESM4
-  { type: d3.symbolDiamond, rotate: 0 },    // MIROC6
-  { type: d3.symbolTriangle, rotate: 180 }, // MRI-ESM2-0
-];
 
 export const fmt1 = d3.format('+.1f');
 export const fmt2 = d3.format('+.2f');

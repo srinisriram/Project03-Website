@@ -1,5 +1,5 @@
 // Colour legend: continuous bar on the fixed 1–7 °C scale, a tick for every state's current value,
-// and a marker for the hovered or selected state.
+// and a marker for the hovered state.
 import { color, COLOR_DOMAIN, key, fmt1 } from './scales.js';
 
 const WIDTH = 560;
@@ -48,7 +48,7 @@ export function createLegend(container) {
         .attr('y1', BAR_Y - 9).attr('y2', BAR_Y - 2)
         .attr('x1', s => x(s.values[k].median)).attr('x2', s => x(s.values[k].median));
 
-    const focus = states.find(s => s.name === (view.hovered || view.selected));
+    const focus = states.find(s => s.name === view.hovered);
     marker.style('display', focus ? null : 'none');
     if (focus) {
       const v = focus.values[k].median;

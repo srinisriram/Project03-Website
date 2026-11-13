@@ -1,4 +1,4 @@
-// State choropleth: fills, value labels, hover/selection highlighting, and pointer/keyboard events.
+// State choropleth: fills, value labels, hover highlighting, and pointer/keyboard events.
 import { color, labelInk, key } from './scales.js';
 
 const WIDTH = 960;
@@ -35,23 +35,16 @@ export function createMap(container, geo, handlers) {
       .attr('d', path)
       .attr('data-state', d => d.properties.name)
       .attr('tabindex', 0)
-      .attr('role', 'button')
+      .attr('role', 'img')
       .on('pointerenter pointermove', (event, d) => handlers.hover(d.properties.name, event.clientX, event.clientY))
       .on('pointerleave', () => handlers.leave())
-      .on('click', (event, d) => handlers.select(d.properties.name))
       .on('focus', function (event, d) {
         const box = this.getBoundingClientRect();
         handlers.hover(d.properties.name, box.x + box.width / 2, box.y + box.height / 2);
       })
-      .on('blur', () => handlers.leave())
-      .on('keydown', (event, d) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          handlers.select(d.properties.name);
-        }
-      });
+      .on('blur', () => handlers.leave());
 
-  // Selected/hovered outlines live in their own layer: a white halo under a dark line stays
+  // The hovered outline lives in their own layer: a white halo under a dark line stays
   // visible on both the palest and the darkest fills.
   const highlight = svg.append('g').attr('class', 'highlight').attr('aria-hidden', 'true');
   const featureByName = new Map(geo.features.map(f => [f.properties.name, f]));
@@ -107,13 +100,9 @@ export function createMap(container, geo, handlers) {
     paths
       .attr('data-value', d => value(d.properties.name))
       .attr('aria-label', d => `${d.properties.name}: ${d3.format('+.1f')(value(d.properties.name))} °C`)
-      .attr('aria-pressed', d => d.properties.name === view.selected)
-      .classed('is-selected', d => d.properties.name === view.selected)
-      .classed('is-hovered', d => d.properties.name === view.hovered)
-      .classed('is-dimmed', d => !!view.highlight && !view.highlight.has(d.properties.name));
+      .classed('is-hovered', d => d.properties.name === view.hovered);
 
-    const marks = [{ kind: 'selected', name: view.selected }, { kind: 'hovered', name: view.hovered }]
-      .filter(m => m.name && !(m.kind === 'hovered' && m.name === view.selected));
+    const marks = view.hovered ? [{ kind: 'hovered', name: view.hovered }] : [];
     highlight.selectAll('g')
       .data(marks, m => m.kind)
       .join(enter => {
@@ -129,8 +118,7 @@ export function createMap(container, geo, handlers) {
     inside.select('.value').text(a => d3.format('.1f')(value(a.name)));
     inside.selectAll('text').attr('fill', a => labelInk(value(a.name)));
     outside.select('.value').text(a => d3.format('.1f')(value(a.name)));
-    labelLayer.selectAll('g').classed('is-active', a => a.name === view.hovered || a.name === view.selected)
-      .classed('is-dimmed', a => !!view.highlight && !view.highlight.has(a.name));
+    labelLayer.selectAll('g').classed('is-active', a => a.name === view.hovered);
 
     svg.classed('labels-hidden', !labelsFit || !view.labels);
     lastView = view;
