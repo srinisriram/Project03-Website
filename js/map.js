@@ -37,12 +37,18 @@ export function createMap(container, geo, handlers) {
       .attr('tabindex', 0)
       .attr('role', 'img')
       .on('pointerenter pointermove', (event, d) => handlers.hover(d.properties.name, event.clientX, event.clientY))
-      .on('pointerleave', () => handlers.leave())
+      // On touchscreens there is no hover, and pointerleave fires as soon as the finger lifts,
+      // so a tapped state keeps its tooltip until the next tap elsewhere.
+      .on('pointerleave', event => { if (event.pointerType !== 'touch') handlers.leave(); })
       .on('focus', function (event, d) {
         const box = this.getBoundingClientRect();
         handlers.hover(d.properties.name, box.x + box.width / 2, box.y + box.height / 2);
       })
       .on('blur', () => handlers.leave());
+
+  d3.select(document).on('pointerdown.map-touch', event => {
+    if (event.pointerType === 'touch' && !event.target.closest('path.state')) handlers.leave();
+  });
 
   // The hovered outline lives in their own layer: a white halo under a dark line stays
   // visible on both the palest and the darkest fills.

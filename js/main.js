@@ -86,6 +86,17 @@ function showStateTooltip(name, cx, cy) {
     ${signNote}`, cx, cy);
 }
 
+// One-sentence takeaway for the current view, built from the data: the range across states,
+// the three states that warm most and the one that warms least.
+function takeaway(k) {
+  const order = d3.sort(states, s => -s.values[k].median);
+  const lo = order.at(-1), hi = order[0];
+  const top = order.slice(0, 3).map(s => s.name);
+  const every = lo.values[k].median > 0 ? 'every state warms ' : 'states change ';
+  return `${SCENARIOS[view.scenario].long}, ${PERIODS[view.period].label}: ${every}${fmt1(lo.values[k].median)} to ${fmt1(hi.values[k].median)} °C ` +
+    `relative to 1981–2010, most in ${top[0]}, ${top[1]} and ${top[2]} and least in ${lo.name}.`;
+}
+
 // ---- render ----
 function set(patch) {
   Object.assign(view, patch);
@@ -93,7 +104,7 @@ function set(patch) {
 }
 
 function render() {
-  d3.select('#subtitle').text(`Projected warming in ${PERIODS[view.period].label} relative to 1981–2010, ${SCENARIOS[view.scenario].long}`);
+  d3.select('#subtitle').text(takeaway(key(view.scenario, view.period)));
   scenarioButtons.attr('aria-pressed', ([v]) => v === view.scenario).classed('is-active', ([v]) => v === view.scenario);
   periodButtons.attr('aria-pressed', ([v]) => v === view.period).classed('is-active', ([v]) => v === view.period);
 
